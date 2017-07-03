@@ -1,41 +1,31 @@
 import React, { Component } from 'react';
 import { AutoComplete, MenuItem } from 'material-ui';
 import Marker from 'material-ui/svg-icons/maps/place';
+import { google } from 'global';
 
 class GooglePlaceAutocomplete extends Component {
-  constructor(props) {
-    super(props);
+  state = {
+    data: [],
+    searchText: '',
+  };
 
-    this.state = {
-      data: [],
-      searchText: '',
-    };
+  geocoder = new google.maps.Geocoder;
 
-    const google = window.google;
-    this.geocoder = new google.maps.Geocoder;
+  // Documentation for AutocompleteService
+  // https://developers.google.com/maps/documentation/javascript/places-autocomplete#place_autocomplete_service
+  service = new google.maps.places.AutocompleteService(null);
 
-    // Documentation for AutocompleteService
-    // https://developers.google.com/maps/documentation/javascript/places-autocomplete#place_autocomplete_service
-    this.service = new google.maps.places.AutocompleteService(null);
-
-    // binding for functions
-    this.updateInput = this.updateInput.bind(this);
-    this.populateData = this.populateData.bind(this);
-    this.getCurrentDataState = this.getCurrentDataState.bind(this);
-    this.getLatLgn = this.getLatLgn.bind(this);
-  }
-
-  getCurrentDataState() {
+  getCurrentDataState = () => {
     return this.state.data;
   }
 
-  getLatLgn(locationID, cb) {
+  getLatLgn = (locationID, cb) => {
     this.geocoder.geocode({ placeId: locationID }, (results, status) => {
       cb(results, status);
     });
   }
 
-  updateInput(searchText) {
+  updateInput = (searchText) => {
     if (searchText.length > 0) {
       this.setState({
         searchText,
@@ -56,9 +46,10 @@ class GooglePlaceAutocomplete extends Component {
     }
   }
 
-  populateData(array) {
+  populateData = (array) => {
     this.setState({ data: array });
   }
+  
   render() {
     return (
       <div>
